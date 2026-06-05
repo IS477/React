@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Tutorial React + FreeToGame API</title>
+<style>
+:root{--bg:#0f1117;--surface:#1a1d2e;--surface2:#252840;--border:#2e3354;--accent:#6c63ff;--accent2:#ff6584;--accent3:#43d9ad;--text:#e2e8f0;--muted:#94a3b8;--code-bg:#0d1117;--hl:#ffd700}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent3);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:980px;margin:0 auto;padding:24px 20px}
+header{background:linear-gradient(135deg,#1a1d2e,#252840);border-bottom:1px solid var(--border);padding:28px 20px;text-align:center;margin-bottom:30px}
+header h1{font-size:2rem;font-weight:800;margin-bottom:8px}
+header h1 span{color:var(--accent)}
+header p{color:var(--muted);font-size:1rem}
+.step{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:28px;overflow:hidden}
+.step-header{background:var(--surface2);padding:16px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.step-num{width:34px;height:34px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;flex-shrink:0}
+.step-title{font-size:1.15rem;font-weight:700}
+.step-body{padding:22px}
+.step-body p{font-size:.92rem;line-height:1.8;margin-bottom:12px;color:var(--text)}
+.step-body ul{padding-left:20px;margin:10px 0}
+.step-body li{font-size:.9rem;line-height:1.9;color:var(--text)}
+.code-wrapper{background:var(--code-bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:18px 0}
+.code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#161b22;border-bottom:1px solid var(--border)}
+.code-file{font-size:.78rem;font-weight:700;color:var(--accent3);display:flex;align-items:center;gap:8px}
+.code-file::before{content:"📄";font-size:1rem}
+.copy-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:4px 14px;border-radius:6px;font-size:.75rem;cursor:pointer;transition:all .2s}
+.copy-btn:hover{background:var(--surface2);color:var(--text)}
+.copy-btn.copied{border-color:var(--accent3);color:var(--accent3)}
+pre{padding:18px 20px;overflow-x:auto;font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:.82rem;line-height:1.85;tab-size:2;color:var(--text)}
+.kw{color:#ff79c6}.fn{color:#50fa7b}.str{color:#f1fa8c}.cmt{color:#6272a4;font-style:italic}.num{color:#bd93f9}.tag{color:#ff79c6}.atr{color:#50fa7b}.var{color:#8be9fd}.op{color:#ff79c6}.cls{color:#ffb86c}
+.callout{border-radius:10px;padding:14px 18px;margin:18px 0;display:flex;gap:10px;font-size:.86rem;line-height:1.6}
+.callout-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.callout.info{background:rgba(67,217,173,.08);border-left:3px solid var(--accent3)}
+.callout.warn{background:rgba(255,214,0,.08);border-left:3px solid #ffd700}
+.callout.tip{background:rgba(108,99,255,.1);border-left:3px solid var(--accent)}
+.callout.danger{background:rgba(255,101,132,.1);border-left:3px solid var(--accent2)}
+.tree{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:16px 20px;font-family:monospace;font-size:.82rem;line-height:1.9;color:var(--muted)}
+.tree .folder{color:var(--accent3);font-weight:700}
+.tree .file{color:var(--text)}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:8px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;border:none;text-decoration:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#7c75ff}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--border)}
+.nav-top{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.nav-top a{padding:6px 14px;background:var(--surface);border:1px solid var(--border);border-radius:99px;font-size:.78rem;color:var(--muted);text-decoration:none;transition:all .2s}
+.nav-top a:hover{border-color:var(--accent);color:var(--accent)}
+.nav-top a.active{background:rgba(108,99,255,.15);border-color:var(--accent);color:var(--accent)}
+.final-check{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-top:20px}
+.final-check h3{color:var(--accent3);margin-bottom:12px;font-size:1.05rem}
+.final-check ul{list-style:none;padding:0}
+.final-check li{display:flex;align-items:flex-start;gap:10px;padding:6px 0;font-size:.88rem}
+.final-check li::before{content:"✓";color:var(--accent3);font-weight:700;margin-top:1px;flex-shrink:0}
+@media(max-width:640px){.container{padding:16px 12px}header h1{font-size:1.5rem}pre{font-size:.75rem}}
+</style>
+</head>
+<body>
+
+<<header>
+  <div class="container">
+    <h1>🎮 React + <span>FreeToGame API</span></h1>
+    <p>Tutorial paso a paso — Copia y pega cada archivo en tu proyecto</p>
+  </div>
+</header>
+
+<div class="container">
+
+<div class="nav-top">
+  <a href="#paso1" class="active">1. Crear</a>
+  <a href="#paso2">2. Proxy</a>
+  <a href="#paso3">3. Hooks</a>
+  <a href="#paso4">4. Card</a>
+  <a href="#paso5">5. Modal</a>
+  <a href="#paso6">6. App</a>
+  <a href="#paso7">7. CSS</a>
+  <a href="#paso8">8. App.jsx</a>
+  <a href="#paso9">9. Ejecutar</a>
+</div>
+
+<!-- PASO 1 -->
+<div class="step" id="paso1">
+  <div class="step-header"><div class="step-num">1</div><div class="step-title">Crear el proyecto con Vite</div></div>
+  <div class="step-body">
+    <p>Abre tu terminal y ejecuta estos comandos. Esto crea la carpeta <code>games-app</code> con React listo.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">Terminal</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre>npm create vite@latest games-app -- --template react
+<span class="kw">cd</span> games-app
+npm install
+npm run dev</pre>
+</div>
+    <div class="callout info"><span class="callout-icon">💡</span><div>Una vez creado, abre la carpeta <code>games-app</code> en tu editor (VS Code, etc.). Veras esta estructura base.</div></div>
+<div class="tree">
+<span class="folder">games-app/</span>
+├── index.html
+├── package.json
+├── vite.config.js
+├── <span class="folder">src/</span>
+│   ├── main.jsx
+│   ├── App.jsx
+│   └── index.css
+</div>
+  </div>
+</div>
+
+<!-- PASO 2 -->
+<div class="step" id="paso2">
+  <div class="step-header"><div class="step-num">2</div><div class="step-title">Configurar el Proxy en vite.config.js</div></div>
+  <div class="step-body">
+    <p>Reemplaza TODO el contenido de <code>vite.config.js</code> por esto. Esto soluciona el problema CORS de la API en desarrollo.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">vite.config.js</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> { <span class="fn">defineConfig</span> } <span class="kw">from</span> <span class="str">'vite'</span>;
+<span class="kw">import</span> <span class="var">react</span> <span class="kw">from</span> <span class="str">'@vitejs/plugin-react'</span>;
+
+<span class="kw">export default</span> <span class="fn">defineConfig</span>({
+  <span class="var">plugins</span>: [<span class="fn">react</span>()],
+  <span class="var">server</span>: {
+    <span class="var">proxy</span>: {
+      <span class="str">'/api-games'</span>: {
+        <span class="var">target</span>: <span class="str">'https://www.freetogame.com'</span>,
+        <span class="var">changeOrigin</span>: <span class="kw">true</span>,
+        <span class="var">rewrite</span>: (<span class="var">path</span>) => <span class="var">path</span>.<<span class="fn">replace</span>(<<span class="str">/^\/api-games/</span>, <span class="str">'/api'</span>),
+      },
+    },
+  },
+});</pre>
+</div>
+    <div class="callout warn"><span class="callout-icon">⚠️</span><div><strong>IMPORTANTE:</strong> Despues de editar este archivo, deten el servidor con <code>Ctrl+C</code> y vuelve a ejecutar <code>npm run dev</code>.</div></div>
+  </div>
+</div>
+
+<!-- PASO 3 -->
+<div class="step" id="paso3">
+  <div class="step-header"><div class="step-num">3</div><div class="step-title">Crear los Custom Hooks</div></div>
+  <div class="step-body">
+    <p>Crea la carpeta <code>src/hooks/</code> y dentro los dos archivos siguientes.</p>
+    <h3 style="color:var(--accent3);margin:20px 0 10px;font-size:1rem">📁 src/hooks/useFetchGames.js</h3>
+    <p style="font-size:.85rem;color:var(--muted)">Este hook encapsula toda la logica de fetch: carga, error y datos.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/hooks/useFetchGames.js</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export function</span> <span class="fn">useFetchGames</span>(<<span class="var">url</span>) {
+  <span class="kw">const</span> [<span class="var">data</span>, <span class="var">setData</span>] = <span class="fn">useState</span>([]);
+  <span class="kw">const</span> [<span class="var">cargando</span>, <span class="var">setCargando</span>] = <span class="fn">useState</span>(<<span class="kw">true</span>);
+  <span class="kw">const</span> [<span class="var">error</span>, <span class="var">setError</span>] = <span class="fn">useState</span>(<<span class="kw">null</span>);
+
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">const</span> <span class="var">ctrl</span> = <span class="kw">new</span> <span class="cls">AbortController</span>();
+    <span class="fn">setCargando</span>(<<span class="kw">true</span>);
+    <span class="fn">setError</span>(<<span class="kw">null</span>);
+
+    <span class="kw">const</span> <span class="fn">run</span> = <span class="kw">async</span> () => {
+      <span class="kw">try</span> {
+        <span class="kw">const</span> <span class="var">res</span> = <span class="kw">await</span> <span class="fn">fetch</span>(<<span class="var">url</span>, { <span class="var">signal</span>: <span class="var">ctrl</span>.signal });
+        <span class="kw">if</span> (!<<span class="var">res</span>.ok) <span class="kw">throw new</span> <span class="cls">Error</span>(<<span class="str">`HTTP ${res.status}`</span>);
+        <span class="fn">setData</span>(<<span class="kw">await</span> <span class="var">res</span>.<<span class="fn">json</span>());
+      } <span class="kw">catch</span> (<span class="var">e</span>) {
+        <span class="kw">if</span> (<span class="var">e</span>.name !== <span class="str">'AbortError'</span>) <span class="fn">setError</span>(<<span class="var">e</span>.message);
+      } <span class="kw">finally</span> {
+        <span class="fn">setCargando</span>(<<span class="kw">false</span>);
+      }
+    };
+    <span class="fn">run</span>();
+    <span class="kw">return</span> () => <span class="var">ctrl</span>.<<span class="fn">abort</span>();
+  }, [<span class="var">url</span>]);
+
+  <span class="kw">return</span> { <span class="var">data</span>, <span class="var">cargando</span>, <span class="var">error</span> };
+}</pre>
+</div>
+    <div class="divider"></div>
+    <h3 style="color:var(--accent3);margin:20px 0 10px;font-size:1rem">📁 src/hooks/useFavorites.js</h3>
+    <p style="font-size:.85rem;color:var(--muted)">Este hook maneja favoritos con persistencia en localStorage.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/hooks/useFavorites.js</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> { <span class="fn">useState</span>, <span class="fn">useEffect</span>, <span class="fn">useCallback</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export function</span> <span class="fn">useFavorites</span>(<<span class="var">key</span> = <span class="str">'favs'</span>) {
+  <span class="cmt">// Lazy initializer: solo lee localStorage UNA VEZ al montar</span>
+  <span class="kw">const</span> [<span class="var">favs</span>, <span class="var">setFavs</span>] = <span class="fn">useState</span>(() =>
+    <span class="cls">JSON</span>.<<span class="fn">parse</span>(localStorage.<span class="fn">getItem</span>(<<span class="var">key</span>) ?? <span class="str">'[]'</span>)
+  );
+
+  <span class="cmt">// Guardar en localStorage cada vez que cambia</span>
+  <span class="fn">useEffect</span>(() => {
+    localStorage.<span class="fn">setItem</span>(<<span class="var">key</span>, <span class="cls">JSON</span>.<<span class="fn">stringify</span>(<<span class="var">favs</span>));
+  }, [<span class="var">favs</span>, <span class="var">key</span>]);
+
+  <span class="kw">const</span> <span class="fn">toggle</span> = <span class="fn">useCallback</span>((<<span class="var">id</span>) => {
+    <span class="fn">setFavs</span>(<<span class="var">prev</span> =>
+      <span class="var">prev</span>.<<span class="fn">includes</span>(<<span class="var">id</span>)
+        ? <span class="var">prev</span>.<<span class="fn">filter</span>(<<span class="var">f</span> => <span class="var">f</span> !== <span class="var">id</span>)
+        : [...<<span class="var">prev</span>, <span class="var">id</span>]
+    );
+  }, []);
+
+  <span class="kw">const</span> <span class="fn">isFav</span> = <span class="fn">useCallback</span>((<<span class="var">id</span>) => <span class="var">favs</span>.<<span class="fn">includes</span>(<<span class="var">id</span>), [<span class="var">favs</span>]);
+
+  <span class="kw">return</span> { <span class="var">favs</span>, <span class="fn">toggle</span>, <span class="fn">isFav</span>, <span class="var">count</span>: <span class="var">favs</span>.length };
+}</pre>
+</div>
+  </div>
+</div>
+
+<!-- PASO 4 -->
+<div class="step" id="paso4">
+  <div class="step-header"><div class="step-num">4</div><div class="step-title">Crear el componente GameCard</div></div>
+  <div class="step-body">
+    <p>Crea la carpeta <code>src/components/</code> y dentro este archivo.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/components/GameCard.jsx</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> <span class="cls">React</span> <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cmt">// React.memo evita re-renders innecesarios si las props no cambian</span>
+<span class="kw">const</span> <span class="cls">GameCard</span> = <span class="cls">React</span>.<<span class="fn">memo</span>(<<span class="kw">function</span> <span class="fn">GameCard</span>({ <span class="var">game</span>, <span class="var">isFav</span>, <span class="var">onToggleFav</span>, <span class="var">onClick</span> }) {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"game-card"</span> <span class="atr">onClick</span>={() => <span class="fn">onClick</span>(<<span class="var">game</span>)}&gt;
+
+      <span class="cmt">// Boton favorito — stopPropagation evita abrir el modal</span>
+      &lt;<span class="tag">button</span>
+        <span class="atr">className</span>={<span class="str">`fav-btn ${isFav ? 'active' : ''}`</span>}
+        <span class="atr">onClick</span>={(<span class="var">e</span>) => {
+          <span class="var">e</span>.<<span class="fn">stopPropagation</span>();
+          <span class="fn">onToggleFav</span>(<<span class="var">game</span>.id);
+        }}
+      &gt;
+        {<span class="var">isFav</span> ? <span class="str">'❤️'</span> : <span class="str">'🤍'</span>}
+      &lt;/<<span class="tag">button</span>&gt;
+
+      &lt;<span class="tag">img</span> <span class="atr">src</span>={<span class="var">game</span>.thumbnail} <span class="atr">alt</span>={<span class="var">game</span>.title} <span class="atr">loading</span>=<<span class="str">"lazy"</span> /&gt;
+
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"game-card-body"</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"game-title"</span>&gt;{<<span class="var">game</span>.title}&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"game-meta"</span>&gt;
+          &lt;<span class="tag">span</span> <span class="atr">className</span>=<<span class="str">"badge-genre"</span>&gt;{<<span class="var">game</span>.genre}&lt;/<<span class="tag">span</span>&gt;
+          &lt;<span class="tag">span</span> <span class="atr">className</span>=<<span class="str">"badge-plat"</span>&gt;
+            {<span class="var">game</span>.platform === <span class="str">'PC (Windows)'</span> ? <span class="str">'🖥'</span> : <span class="str">'🌐'</span>}
+          &lt;/<<span class="tag">span</span>&gt;
+        &lt;/<<span class="tag">div</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+    &lt;/<<span class="tag">div</span>&gt;
+  );
+});
+
+<span class="kw">export default</span> <span class="cls">GameCard</span>;</pre>
+</div>
+    <div class="callout danger"><span class="callout-icon">🚫</span><div><strong>Nunca uses <code>key=index</code></strong> en listas. Siempre usa el ID unico del dato. React lo necesita para reconciliar el DOM correctamente.</div></div>
+  </div>
+</div>
+
+<!-- PASO 5 -->
+<div class="step" id="paso5">
+  <div class="step-header"><div class="step-num">5</div><div class="step-title">Crear el componente GameModal</div></div>
+  <div class="step-body">
+    <p>Dentro de <code>src/components/</code> crea este archivo. Muestra el detalle del juego y se cierra con Escape.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/components/GameModal.jsx</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> { <span class="fn">useEffect</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="kw">export default function</span> <span class="fn">GameModal</span>({ <span class="var">game</span>, <span class="var">isFav</span>, <span class="var">onToggleFav</span>, <span class="var">onClose</span> }) {
+
+  <span class="cmt">// Cerrar modal al presionar Escape</span>
+  <span class="fn">useEffect</span>(() => {
+    <span class="kw">const</span> <span class="fn">handler</span> = (<span class="var">e</span>) => {
+      <span class="kw">if</span> (<span class="var">e</span>.key === <span class="str">'Escape'</span>) <span class="fn">onClose</span>();
+    };
+    document.<span class="fn">addEventListener</span>(<<span class="str">'keydown'</span>, <span class="fn">handler</span>);
+    <span class="kw">return</span> () => document.<span class="fn">removeEventListener</span>(<<span class="str">'keydown'</span>, <span class="fn">handler</span>);
+  }, [<span class="var">onClose</span>]);
+
+  <span class="kw">if</span> (!<<span class="var">game</span>) <span class="kw">return null</span>;
+
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-overlay"</span> <span class="atr">onClick</span>={<span class="var">onClose</span>}&gt;
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal"</span> <span class="atr">onClick</span>={<span class="var">e</span> => <span class="var">e</span>.<<span class="fn">stopPropagation</span>()}&gt;
+        &lt;<span class="tag">img</span> <span class="atr">className</span>=<<span class="str">"modal-img"</span> <span class="atr">src</span>={<span class="var">game</span>.thumbnail} <span class="atr">alt</span>={<span class="var">game</span>.title} /&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-body"</span>&gt;
+          &lt;<span class="tag">button</span> <span class="atr">className</span>=<<span class="str">"modal-close"</span> <span class="atr">onClick</span>={<span class="var">onClose</span>}&gt;✕ Cerrar&lt;/<<span class="tag">button</span>&gt;
+          &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-title"</span>&gt;{<<span class="var">game</span>.title}&lt;/<<span class="tag">div</span>&gt;
+          &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-desc"</span>&gt;
+            {<span class="var">game</span>.short_description || <span class="str">'Sin descripcion.'</span>}
+          &lt;/<<span class="tag">div</span>&gt;
+          &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-meta"</span>&gt;
+            &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-item"</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-label"</span>&gt;Genero&lt;/<<span class="tag">div</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-val"</span>&gt;{<<span class="var">game</span>.genre}&lt;/<<span class="tag">div</span>&gt;
+            &lt;/<<span class="tag">div</span>&gt;
+            &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-item"</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-label"</span>&gt;Plataforma&lt;/<<span class="tag">div</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-val"</span>&gt;{<<span class="var">game</span>.platform}&lt;/<<span class="tag">div</span>&gt;
+            &lt;/<<span class="tag">div</span>&gt;
+            &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-item"</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-label"</span>&gt;Desarrollador&lt;/<<span class="tag">div</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-val"</span>&gt;{<<span class="var">game</span>.developer || <span class="str">'—'</span>}&lt;/<<span class="tag">div</span>&gt;
+            &lt;/<<span class="tag">div</span>&gt;
+            &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-item"</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-label"</span>&gt;Lanzamiento&lt;/<<span class="tag">div</span>&gt;
+              &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"meta-val"</span>&gt;{<<span class="var">game</span>.release_date || <span class="str">'—'</span>}&lt;/<<span class="tag">div</span>&gt;
+            &lt;/<<span class="tag">div</span>&gt;
+          &lt;/<<span class="tag">div</span>&gt;
+        &lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"modal-footer"</span>&gt;
+          &lt;<span class="tag">button</span>
+            <span class="atr">className</span>={<span class="str">`btn btn-sm ${isFav ? 'btn-success' : 'btn-secondary'}`</span>}
+            <span class="atr">onClick</span>={() => <span class="fn">onToggleFav</span>(<<span class="var">game</span>.id)}
+          &gt;
+            {<span class="var">isFav</span> ? <span class="str">'❤️ Quitar de favoritos'</span> : <span class="str">'🤍 Anadir a favoritos'</span>}
+          &lt;/<<span class="tag">button</span>&gt;
+          &lt;<span class="tag">a</span> <span class="atr">href</span>={<span class="var">game</span>.game_url} <span class="atr">target</span>=<<span class="str">"_blank"</span> <span class="atr">rel</span>=<<span class="str">"noopener"</span> <span class="atr">className</span>=<<span class="str">"btn btn-primary btn-sm"</span>&gt;
+            Jugar gratis ↗
+          &lt;/<<span class="tag">a</span>&gt;
+        &lt;/<<span class="tag">div</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+    &lt;/<<span class="tag">div</span>&gt;
+  );
+}</pre>
+</div>
+  </div>
+</div>
+
+<!-- PASO 6 -->
+<div class="step" id="paso6">
+  <div class="step-header"><div class="step-num">6</div><div class="step-title">Crear el componente principal GamesApp.jsx</div></div>
+  <div class="step-body">
+    <p>Este es el archivo mas grande. Combina <strong>todos los hooks</strong>: useState, useEffect, useMemo, useCallback, useReducer y los Custom Hooks.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/GamesApp.jsx</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> { <span class="fn">useState</span>, <span class="fn">useMemo</span>, <span class="fn">useCallback</span>, <span class="fn">useReducer</span> } <span class="kw">from</span> <span class="str">'react'</span>;
+<span class="kw">import</span> { <span class="fn">useFetchGames</span> } <span class="kw">from</span> <span class="str">'./hooks/useFetchGames'</span>;
+<span class="kw">import</span> { <span class="fn">useFavorites</span> } <span class="kw">from</span> <span class="str">'./hooks/useFavorites'</span>;
+<span class="kw">import</span> <span class="cls">GameCard</span> <span class="kw">from</span> <span class="str">'./components/GameCard'</span>;
+<span class="kw">import</span> <span class="cls">GameModal</span> <span class="kw">from</span> <span class="str">'./components/GameModal'</span>;
+
+<span class="cmt">// 1. CONSTANTES</span>
+<span class="kw">const</span> <span class="cls">API</span> = <span class="str">'/api-games/games'</span>;
+<span class="kw">const</span> <span class="cls">POR_PAGINA</span> = <span class="num">12</span>;
+
+<span class="cmt">// 2. useReducer: estado de filtros (Paso 10)</span>
+<span class="kw">const</span> <span class="var">initialFilters</span> = {
+  <span class="var">busqueda</span>: <span class="str">''</span>,
+  <span class="var">genero</span>: <span class="str">'todos'</span>,
+  <span class="var">plat</span>: <span class="str">'todos'</span>,
+  <span class="var">orden</span>: <span class="str">'titulo'</span>,
+  <span class="var">pagina</span>: <span class="num">1</span>,
+};
+
+<span class="kw">function</span> <span class="fn">filtersReducer</span>(<<span class="var">state</span>, <span class="var">action</span>) {
+  <span class="kw">switch</span> (<span class="var">action</span>.type) {
+    <span class="kw">case</span> <span class="str">'SET_BUSQUEDA'</span>:
+      <span class="kw">return</span> { ...<<span class="var">state</span>, <span class="var">busqueda</span>: <span class="var">action</span>.payload, <span class="var">pagina</span>: <span class="num">1</span> };
+    <span class="kw">case</span> <span class="str">'SET_GENERO'</span>:
+      <span class="kw">return</span> { ...<<span class="var">state</span>, <span class="var">genero</span>: <span class="var">action</span>.payload, <span class="var">pagina</span>: <span class="num">1</span> };
+    <span class="kw">case</span> <span class="str">'SET_PLAT'</span>:
+      <span class="kw">return</span> { ...<<span class="var">state</span>, <span class="var">plat</span>: <span class="var">action</span>.payload, <span class="var">pagina</span>: <span class="num">1</span> };
+    <span class="kw">case</span> <span class="str">'SET_ORDEN'</span>:
+      <span class="kw">return</span> { ...<<span class="var">state</span>, <span class="var">orden</span>: <span class="var">action</span>.payload, <span class="var">pagina</span>: <span class="num">1</span> };
+    <span class="kw">case</span> <span class="str">'NEXT_PAGE'</span>:
+      <span class="kw">return</span> { ...<<span class="var">state</span>, <span class="var">pagina</span>: <span class="var">state</span>.pagina + <span class="num">1</span> };
+    <span class="kw">case</span> <span class="str">'RESET'</span>:
+      <span class="kw">return</span> <span class="var">initialFilters</span>;
+    <span class="kw">default</span>:
+      <span class="kw">return</span> <span class="var">state</span>;
+  }
+}
+
+<span class="cmt">// COMPONENTE PRINCIPAL</span>
+<span class="kw">export default function</span> <span class="fn">GamesApp</span>() {
+
+  <span class="cmt">// Datos desde custom hook (Paso 8)</span>
+  <span class="kw">const</span> { <span class="var">data</span>: <span class="var">juegos</span>, <span class="var">cargando</span>, <span class="var">error</span> } = <span class="fn">useFetchGames</span>(<<span class="cls">API</span>);
+
+  <span class="cmt">// Favoritos desde custom hook (Paso 8)</span>
+  <span class="kw">const</span> { <span class="var">favs</span>, <span class="fn">toggle</span>, <span class="fn">isFav</span>, <span class="var">count</span>: <span class="var">favCount</span> } = <span class="fn">useFavorites</span>(<<span class="str">'ftg-favs'</span>);
+
+  <span class="cmt">// Filtros con useReducer (Paso 10)</span>
+  <span class="kw">const</span> [<span class="var">filters</span>, <span class="var">dispatch</span>] = <span class="fn">useReducer</span>(<<span class="var">filtersReducer</span>, <span class="var">initialFilters</span>);
+  <span class="kw">const</span> { <span class="var">busqueda</span>, <span class="var">genero</span>, <span class="var">plat</span>, <span class="var">orden</span>, <span class="var">pagina</span> } = <span class="var">filters</span>;
+
+  <span class="cmt">// UI local</span>
+  <span class="kw">const</span> [<span class="var">tab</span>, <span class="var">setTab</span>] = <span class="fn">useState</span>(<<span class="str">'todos'</span>);
+  <span class="kw">const</span> [<span class="var">modalGame</span>, <span class="var">setModalGame</span>] = <span class="fn">useState</span>(<<span class="kw">null</span>);
+
+  <span class="cmt">// useMemo: generos unicos (Paso 7)</span>
+  <span class="kw">const</span> <span class="var">generos</span> = <span class="fn">useMemo</span>(() =>
+    [<span class="str">'todos'</span>, ...[...<<span class="kw">new</span> <span class="cls">Set</span>(<<span class="var">juegos</span>.<<span class="fn">map</span>(<<span class="var">g</span> => <span class="var">g</span>.genre))].<<span class="fn">sort</span>()],
+    [<span class="var">juegos</span>]
+  );
+
+  <span class="cmt">// useMemo: filtrar + ordenar (Paso 7)</span>
+  <span class="kw">const</span> <span class="var">filtrados</span> = <span class="fn">useMemo</span>(() => {
+    <span class="kw">let</span> <span class="var">lista</span> = <span class="var">tab</span> === <span class="str">'favs'</span>
+      ? <span class="var">juegos</span>.<<span class="fn">filter</span>(<<span class="var">g</span> => <span class="var">favs</span>.<<span class="fn">includes</span>(<<span class="var">g</span>.id))
+      : <span class="var">juegos</span>;
+
+    <span class="var">lista</span> = <span class="var">lista</span>.<<span class="fn">filter</span>(<<span class="var">g</span> =>
+      (<span class="var">genero</span> === <span class="str">'todos'</span> || <span class="var">g</span>.genre === <span class="var">genero</span>) &&
+      (<span class="var">plat</span> === <span class="str">'todos'</span> || <span class="var">g</span>.platform === <span class="var">plat</span>) &&
+      <span class="var">g</span>.title.<span class="fn">toLowerCase</span>().<<span class="fn">includes</span>(<<span class="var">busqueda</span>.<<span class="fn">toLowerCase</span>())
+    );
+
+    <span class="kw">if</span> (<span class="var">orden</span> === <span class="str">'titulo'</span>)
+      <span class="var">lista</span> = [...<<span class="var">lista</span>].<<span class="fn">sort</span>((<<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span>.title.<span class="fn">localeCompare</span>(<<span class="var">b</span>.title));
+    <span class="kw">if</span> (<span class="var">orden</span> === <span class="str">'fecha'</span>)
+      <span class="var">lista</span> = [...<<span class="var">lista</span>].<<span class="fn">sort</span>((<<span class="var">a</span>, <span class="var">b</span>) => <span class="var">b</span>.release_date.<span class="fn">localeCompare</span>(<<span class="var">a</span>.release_date));
+    <span class="kw">if</span> (<span class="var">orden</span> === <span class="str">'genero'</span>)
+      <span class="var">lista</span> = [...<<span class="var">lista</span>].<<span class="fn">sort</span>((<<span class="var">a</span>, <span class="var">b</span>) => <span class="var">a</span>.genre.<span class="fn">localeCompare</span>(<<span class="var">b</span>.genre));
+
+    <span class="kw">return</span> <span class="var">lista</span>;
+  }, [<span class="var">juegos</span>, <span class="var">tab</span>, <span class="var">favs</span>, <span class="var">genero</span>, <span class="var">plat</span>, <span class="var">busqueda</span>, <span class="var">orden</span>]);
+
+  <span class="cmt">// useMemo: paginacion (Paso 7)</span>
+  <span class="kw">const</span> <span class="var">paginados</span> = <span class="fn">useMemo</span>(() =>
+    <span class="var">filtrados</span>.<<span class="fn">slice</span>(<<span class="num">0</span>, <span class="var">pagina</span> * <span class="cls">POR_PAGINA</span>),
+    [<span class="var">filtrados</span>, <span class="var">pagina</span>]
+  );
+
+  <span class="cmt">// useCallback: handlers estables (Paso 9)</span>
+  <span class="kw">const</span> <span class="fn">handleToggleFav</span> = <span class="fn">useCallback</span>((<<span class="var">id</span>) => <span class="fn">toggle</span>(<<span class="var">id</span>), [<span class="var">toggle</span>]);
+  <span class="kw">const</span> <span class="fn">handleSelectGame</span> = <span class="fn">useCallback</span>((<<span class="var">g</span>) => <span class="fn">setModalGame</span>(<<span class="var">g</span>), []);
+  <span class="kw">const</span> <span class="fn">handleCloseModal</span> = <span class="fn">useCallback</span>(() => <span class="fn">setModalGame</span>(<<span class="kw">null</span>), []);
+  <span class="kw">const</span> <span class="fn">handleLoadMore</span> = <span class="fn">useCallback</span>(() => <span class="var">dispatch</span>({ type: <span class="str">'NEXT_PAGE'</span> }), []);
+
+  <span class="cmt">// RENDERIZADO CONDICIONAL (Paso 6)</span>
+  <span class="kw">if</span> (<span class="var">cargando</span>) {
+    <span class="kw">return</span> (
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"loading-spinner"</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"spinner"</span>&gt;&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">span</span>&gt;Cargando juegos...&lt;/<<span class="tag">span</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+    );
+  }
+
+  <span class="kw">if</span> (<span class="var">error</span>) {
+    <span class="kw">return</span> (
+      &lt;<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"error-msg"</span>&gt;❌ {<span class="var">error</span>}&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">button</span> <span class="atr">className</span>=<<span class="str">"btn btn-secondary"</span>
+          <span class="atr">onClick</span>={() => window.<span class="fn">location</span>.<<span class="fn">reload</span>()}&gt;
+          ↺ Reintentar
+        &lt;/<<span class="tag">button</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+    );
+  }
+
+  <span class="kw">const</span> <span class="var">hasMore</span> = <span class="var">paginados</span>.length &lt; <span class="var">filtrados</span>.length;
+
+  <span class="cmt">// RENDER PRINCIPAL</span>
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span>&gt;
+      <span class="cmt">// Stats</span>
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"stats-bar"</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"stat"</span>&gt;Total cargados: &lt;<span class="tag">span</span>&gt;{<<span class="var">juegos</span>.length}&lt;/<<span class="tag">span</span>&gt;&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"stat"</span>&gt;Mostrando: &lt;<span class="tag">span</span>&gt;{<<span class="var">paginados</span>.length}&lt;/<<span class="tag">span</span>&gt;&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"stat"</span>&gt;Filtrados: &lt;<span class="tag">span</span>&gt;{<<span class="var">filtrados</span>.length}&lt;/<<span class="tag">span</span>&gt;&lt;/<<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"stat"</span>&gt;Favoritos: &lt;<span class="tag">span</span>&gt;{<<span class="var">favCount</span>}&lt;/<<span class="tag">span</span>&gt;&lt;/<<span class="tag">div</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+
+      <span class="cmt">// Tabs: Todos / Favoritos</span>
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"tab-bar"</span>&gt;
+        &lt;<span class="tag">button</span>
+          <span class="atr">className</span>={<span class="str">`tab-btn ${tab === 'todos' ? 'active' : ''}`</span>}
+          <span class="atr">onClick</span>={() => <span class="fn">setTab</span>(<<span class="str">'todos'</span>)}
+        &gt;🎮 Todos&lt;/<<span class="tag">button</span>&gt;
+        &lt;<span class="tag">button</span>
+          <span class="atr">className</span>={<span class="str">`tab-btn ${tab === 'favs' ? 'active' : ''}`</span>}
+          <span class="atr">onClick</span>={() => <span class="fn">setTab</span>(<<span class="str">'favs'</span>)}
+        &gt;
+          ❤️ Favoritos
+          {<span class="var">favCount</span> &gt; <span class="num">0</span> && &lt;<span class="tag">span</span> <span class="atr">className</span>=<<span class="str">"fav-count-badge"</span>&gt;{<<span class="var">favCount</span>}&lt;/<<span class="tag">span</span>&gt;}
+        &lt;/<<span class="tag">button</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+
+      <span class="cmt">// Toolbar: busqueda + orden</span>
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"toolbar"</span>&gt;
+        &lt;<span class="tag">input</span>
+          <span class="atr">className</span>=<<span class="str">"search-input"</span>
+          <span class="atr">style</span>={{ <span class="var">margin</span>: <span class="num">0</span>, <span class="var">flex</span>: <span class="num">1</span>, <span class="var">minWidth</span>: <span class="str">'140px'</span> }}
+          <span class="atr">type</span>=<<span class="str">"text"</span>
+          <span class="atr">placeholder</span>=<<span class="str">"🔍 Buscar juego..."</span>
+          <span class="atr">value</span>={<span class="var">busqueda</span>}
+          <span class="atr">onChange</span>={<span class="var">e</span> => <span class="var">dispatch</span>({ type: <span class="str">'SET_BUSQUEDA'</span>, payload: <span class="var">e</span>.target.value })}
+        /&gt;
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"toolbar-right"</span>&gt;
+          &lt;<span class="tag">select</span>
+            <span class="atr">className</span>=<<span class="str">"sort-select"</span>
+            <span class="atr">value</span>={<span class="var">orden</span>}
+            <span class="atr">onChange</span>={<span class="var">e</span> => <span class="var">dispatch</span>({ type: <span class="str">'SET_ORDEN'</span>, payload: <span class="var">e</span>.target.value })}
+          &gt;
+            &lt;<span class="tag">option</span> <span class="atr">value</span>=<<span class="str">"titulo"</span>&gt;A-Z&lt;/<<span class="tag">option</span>&gt;
+            &lt;<span class="tag">option</span> <span class="atr">value</span>=<<span class="str">"fecha"</span>&gt;Mas nuevos&lt;/<<span class="tag">option</span>&gt;
+            &lt;<span class="tag">option</span> <span class="atr">value</span>=<<span class="str">"genero"</span>&gt;Por genero&lt;/<<span class="tag">option</span>&gt;
+          &lt;/<<span class="tag">select</span>&gt;
+          {(<span class="var">busqueda</span> || <span class="var">genero</span> !== <span class="str">'todos'</span> || <span class="var">plat</span> !== <span class="str">'todos'</span>) && (
+            &lt;<span class="tag">button</span>
+              <span class="atr">className</span>=<<span class="str">"btn btn-secondary btn-sm"</span>
+              <span class="atr">onClick</span>={() => <span class="var">dispatch</span>({ type: <span class="str">'RESET'</span> })}
+            &gt;✕ Limpiar&lt;/<<span class="tag">button</span>&gt;
+          )}
+        &lt;/<<span class="tag">div</span>&gt;
+      &lt;/<<span class="tag">div</span>&gt;
+
+      <span class="cmt">// Filtros por genero</span>
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"filter-bar"</span>&gt;
+        {<span class="var">generos</span>.<<span class="fn">slice</span>(<<span class="num">0</span>, <span class="num">10</span>).<<span class="fn">map</span>(<<span class="var">g</span> => (
+          &lt;<span class="tag">button</span>
+            <span class="atr">key</span>={<span class="var">g</span>}
+            <span class="atr">className</span>={<span class="str">`filter-btn ${genero === g ? 'active' : ''}`</span>}
+            <span class="atr">onClick</span>={() => <span class="var">dispatch</span>({ type: <span class="str">'SET_GENERO'</span>, payload: <span class="var">g</span> })}
+          &gt;{<<span class="var">g</span>}&lt;/<<span class="tag">button</span>&gt;
+        ))}
+      &lt;/<<span class="tag">div</span>&gt;
+
+      <span class="cmt">// Filtros por plataforma</span>
+      &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"filter-bar"</span>&gt;
+        {[<<span class="str">'todos'</span>, <span class="str">'PC (Windows)'</span>, <span class="str">'Web Browser'</span>].<<span class="fn">map</span>(<<span class="var">p</span> => (
+          &lt;<span class="tag">button</span>
+            <span class="atr">key</span>={<span class="var">p</span>}
+            <span class="atr">className</span>={<span class="str">`filter-btn ${plat === p ? 'active' : ''}`</span>}
+            <span class="atr">onClick</span>={() => <span class="var">dispatch</span>({ type: <span class="str">'SET_PLAT'</span>, payload: <span class="var">p</span> })}
+          &gt;
+            {<span class="var">p</span> === <span class="str">'todos'</span> ? <span class="str">'Todas plataformas'</span> : <span class="var">p</span> === <span class="str">'PC (Windows)'</span> ? <span class="str">'🖥 PC'</span> : <span class="str">'🌐 Web'</span>}
+          &lt;/<<span class="tag">button</span>&gt;
+        ))}
+      &lt;/<<span class="tag">div</span>&gt;
+
+      <span class="cmt">// Lista de juegos</span>
+      {<span class="var">tab</span> === <span class="str">'favs'</span> && <span class="var">favs</span>.length === <span class="num">0</span> ? (
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"empty-state"</span>&gt;
+          &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"empty-icon"</span>&gt;🤍&lt;/<<span class="tag">div</span>&gt;
+          &lt;<span class="tag">div</span>&gt;No tienes favoritos aun.&lt;<span class="tag">br</span>/&gt;Haz clic en el corazon de cualquier juego.&lt;/<<span class="tag">div</span>&gt;
+        &lt;/<<span class="tag">div</span>&gt;
+      ) : <span class="var">paginados</span>.length === <span class="num">0</span> ? (
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"empty-state"</span>&gt;
+          &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"empty-icon"</span>&gt;🔍&lt;/<<span class="tag">div</span>&gt;
+          &lt;<span class="tag">div</span>&gt;Sin resultados para este filtro.&lt;/<<span class="tag">div</span>&gt;
+        &lt;/<<span class="tag">div</span>&gt;
+      ) : (
+        &lt;<span class="tag">div</span> <span class="atr">className</span>=<<span class="str">"game-grid"</span>&gt;
+          {<span class="var">paginados</span>.<<span class="fn">map</span>(<<span class="var">game</span> => (
+            &lt;<span class="cls">GameCard</span>
+              <span class="atr">key</span>={<span class="var">game</span>.id}
+              <span class="atr">game</span>={<span class="var">game</span>}
+              <span class="atr">isFav</span>={<span class="fn">isFav</span>(<<span class="var">game</span>.id)}
+              <span class="atr">onToggleFav</span>={<span class="var">handleToggleFav</span>}
+              <span class="atr">onClick</span>={<span class="var">handleSelectGame</span>}
+            /&gt;
+          ))}
+        &lt;/<<span class="tag">div</span>&gt;
+      )}
+
+      <span class="cmt">// Cargar mas</span>
+      {<span class="var">hasMore</span> && (
+        &lt;<span class="tag">button</span> <span class="atr">className</span>=<<span class="str">"load-more-btn"</span> <span class="atr">onClick</span>={<span class="var">handleLoadMore</span>}&gt;
+          Cargar mas ({<<span class="var">filtrados</span>.length - <span class="var">paginados</span>.length} restantes)
+        &lt;/<<span class="tag">button</span>&gt;
+      )}
+
+      <span class="cmt">// Modal de detalle</span>
+      {<span class="var">modalGame</span> && (
+        &lt;<span class="cls">GameModal</span>
+          <span class="atr">game</span>={<span class="var">modalGame</span>}
+          <span class="atr">isFav</span>={<span class="fn">isFav</span>(<<span class="var">modalGame</span>.id)}
+          <span class="atr">onToggleFav</span>={<span class="var">handleToggleFav</span>}
+          <span class="atr">onClose</span>={<span class="var">handleCloseModal</span>}
+        /&gt;
+      )}
+    &lt;/<<span class="tag">div</span>&gt;
+  );
+}</pre>
+</div>
+  </div>
+</div>
+
+<!-- PASO 7 -->
+<div class="step" id="paso7">
+  <div class="step-header"><div class="step-num">7</div><div class="step-title">Agregar los estilos CSS</div></div>
+  <div class="step-body">
+    <p>Reemplaza TODO el contenido de <code>src/index.css</code> con estos estilos. Dale el look oscuro a tu app.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/index.css</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre>:root {
+  --bg: #0f1117;
+  --surface: #1a1d2e;
+  --surface2: #252840;
+  --border: #2e3354;
+  --accent: #6c63ff;
+  --accent2: #ff6584;
+  --accent3: #43d9ad;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --code-bg: #0d1117;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+#root {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Stats bar */
+.stats-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.stat {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: .75rem;
+}
+.stat span {
+  color: var(--accent3);
+  font-weight: 700;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1px;
+}
+.tab-btn {
+  padding: 6px 14px;
+  font-size: .78rem;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: all .2s;
+  margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.fav-count-badge {
+  background: var(--accent2);
+  color: #fff;
+  border-radius: 99px;
+  padding: 1px 8px;
+  font-size: .7rem;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.toolbar-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.search-input {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 13px;
+  color: var(--text);
+  font-size: .83rem;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+}
+.search-input:focus { border-color: var(--accent); }
+.sort-select {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: .78rem;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Filter buttons */
+.filter-bar {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.filter-btn {
+  padding: 4px 13px;
+  border-radius: 99px;
+  font-size: .73rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--code-bg);
+  color: var(--muted);
+  transition: all .2s;
+}
+.filter-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+.filter-btn.active {
+  background: rgba(108,99,255,.2);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Game grid */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.game-card {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform .2s, border-color .2s;
+  cursor: pointer;
+  position: relative;
+}
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+}
+.game-card img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  display: block;
+}
+.game-card-body {
+  padding: 8px 10px;
+}
+.game-title {
+  font-size: .8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.game-meta {
+  font-size: .66rem;
+  color: var(--muted);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+.badge-genre {
+  background: rgba(108,99,255,.2);
+  color: #a89dff;
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: .63rem;
+}
+.badge-plat {
+  background: rgba(67,217,173,.15);
+  color: var(--accent3);
+  padding: 2px 7px;
+  border-radius: 99px;
+  font-size: .63rem;
+}
+
+/* Favorite button */
+.fav-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0,0,0,.6);
+  border: none;
+  color: #fff;
+  width: 26
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: .85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  z-index: 2;
+}
+.fav-btn:hover { background: rgba(255,101,132,.8); }
+.fav-btn.active { background: var(--accent2); color: #fff; }
+
+/* Loading */
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px;
+  color: var(--muted);
+  font-size: .86rem;
+}
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error */
+.error-msg {
+  background: rgba(255,101,132,.1);
+  border: 1px solid rgba(255,101,132,.3);
+  border-radius: 8px;
+  padding: 11px 15px;
+  color: var(--accent2);
+  font-size: .83rem;
+  margin: 10px 0;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+/* Load more */
+.load-more-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: .82rem;
+  transition: all .2s;
+}
+.load-more-btn:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: .86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  border: none;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #7c75ff; }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+.btn-success {
+  background: rgba(67,217,173,.15);
+  color: var(--accent3);
+  border: 1px solid rgba(67,217,173,.3);
+}
+.btn-success:hover { background: rgba(67,217,173,.25); }
+.btn-sm { padding: 7px 14px; font-size: .8rem; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn .2s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  max-width: 540px;
+  width: 100%;
+  overflow: hidden;
+  animation: slideUp .25s ease;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.modal-img {
+  width: 100%;
+  aspect-ratio: 16/7;
+  object-fit: cover;
+}
+.modal-body { padding: 20px; }
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.modal-desc {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.modal-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.meta-item {
+  background: var(--code-bg);
+  border-radius: 8px;
+  padding: 8px 12px;
+}
+.meta-label {
+  font-size: .65rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.meta-val {
+  font-size: .82rem;
+  font-weight: 600;
+  margin-top: 2px;
+}
+.modal-close {
+  float: right;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: .78rem;
+  transition: all .2s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-footer {
+  display: flex;
+  gap: 8px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+
+@media(max-width: 640px) {
+  .game-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .modal-meta { grid-template-columns: 1fr; }
+}</pre>
+</div>
+  </div>
+</div>
+
+<!-- PASO 8 -->
+<div class="step" id="paso8">
+  <div class="step-header"><div class="step-num">8</div><div class="step-title">Conectar App.jsx</div></div>
+  <div class="step-body">
+    <p>Reemplaza <code>src/App.jsx</code> para que use tu componente <code>GamesApp</code>.</p>
+<div class="code-wrapper">
+<div class="code-header"><span class="code-file">src/App.jsx</span><button class="copy-btn" onclick="copyCode(this)">Copiar</button></div>
+<pre><span class="kw">import</span> <span class="cls">GamesApp</span> <span class="kw">from</span> <span class="str">'./GamesApp'</span>;
+
+<span class="kw">function</span> <span class="fn">App</span>() {
+  <span class="kw">return</span> (
+    &lt;<span class="tag">div</span>&gt;
+      &lt;<span class="tag">h1</span> <span class="atr">style</span>={{ <span class="var">marginBottom</span>: <span class="str">'20px'</span>, <span class="var">fontSize</span>: <span class="str">'1.5rem'</span> }}&gt;
+        🎮 FreeToGame Explorer
+      &lt;/<<span class="tag">h1</span>&gt;
+      &lt;<span class="cls">GamesApp</span> /&gt;
+    &lt;/<<span class="tag">div</span>&gt;
+  );
+}
+
+<span class="kw">export default</span> <span class="fn">App</span>;</pre>
+</div>
+  </div>
+</div>
+
+<!-- PASO 9 -->
+<div class="step" id="paso9">
+  <div class="step-header"><div class="step-num">9</div><div class="step-title">Ejecutar y probar</div></div>
+  <div class="step-body">
+    <p>Tu estructura final debe verse asi:</p>
+<div class="tree">
+<span class="folder">games-app/</span>
+├── index.html
+├── package.json
+├── vite.config.js          <span class="comment">← Proxy CORS</span>
+└── <span class="folder">src/</span>
+    ├── main.jsx
+    ├── App.jsx             <span class="comment">← Conecta GamesApp</span>
+    ├── GamesApp.jsx        <span class="comment">← Componente principal</span>
+    ├── index.css           <span class="comment">← Estilos oscuros</span>
+    ├── <span class="folder">components/</span>
+    │   ├── GameCard.jsx    <span class="comment">← Tarjeta de juego</span>
+    │   └── GameModal.jsx   <span class="comment">← Modal de detalle</span>
+    └── <span class="folder">hooks/</span>
+        ├── useFetchGames.js  <span class="comment">← Hook de fetch</span>
+        └── useFavorites.js   <span class="comment">← Hook de favoritos</span>
+</div>
+
+    <div class="callout tip"><span class="callout-icon">🚀</span><div>Ejecuta <code>npm run dev</code> y abre <code>http://localhost:5173</code> en tu navegador. Si todo funciona, veras la lista de juegos con filtros, favoritos y modal.</div></div>
+
+    <div class="callout warn"><span class="callout-icon">⚠️</span><div>Si ves un error CORS, asegurate de que el servidor de Vite este corriendo (no uses Live Server de VS Code). El proxy de Vite solo funciona con <code>npm run dev</code>.</div></div>
+
+    <div class="final-check">
+      <h3>✅ Checklist final</h3>
+      <ul>
+        <li><strong>useState</strong> — estado local para tab y modal</li>
+        <li><strong>useEffect</strong> — fetch al montar; cleanup con AbortController</li>
+        <li><strong>useMemo</strong> — filtrar/ordenar/paginar sin recomputar</li>
+        <li><strong>useCallback</strong> — referencias estables para props de hijos</li>
+        <li><strong>useReducer</strong> — estado compuesto de filtros con reset atomico</li>
+        <li><strong>Custom Hooks</strong> — useFetchGames y useFavorites reutilizables</li>
+        <li><strong>localStorage</strong> — persistencia con lazy init + efecto de sync</li>
+        <li><strong>key unica</strong> en listas — siempre el ID del dato</li>
+        <li><strong>Proxy Vite</strong> en dev para solucionar CORS</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const text = btn.closest('.code-wrapper').querySelector('pre').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copiado';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// Highlight active nav link on scroll
+const sections = document.querySelectorAll('.step');
+const navLinks = document.querySelectorAll('.nav-top a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop;
+    if (scrollY >= sectionTop - 100) current = section.getAttribute('id');
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+</body>
+</html>
+

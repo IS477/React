@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './app.css'
+import './App.css'
 function App() {
   const [tareas, setTareas] = useState([
     { id: 1, texto: "Aprender React",       completada: false },
