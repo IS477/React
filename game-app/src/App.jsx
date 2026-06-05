@@ -1,5 +1,4 @@
 import GamesApp from "./GameApp";
-import './App.css'
 
 function App() {
   return (
