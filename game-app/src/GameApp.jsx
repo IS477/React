@@ -4,11 +4,9 @@ import { useFavorites } from './hooks/useFavorites';
 import GameCard from './components/GameCard';
 import GameModal from './components/GameModal';
 
-// 1. CONSTANTES
 const API = '/api-games/games';
 const POR_PAGINA = 12;
 
-// 2. useReducer: estado de filtros (Paso 10)
 const initialFilters = {
   busqueda: '',
   genero: 'todos',
@@ -36,30 +34,23 @@ function filtersReducer(state, action) {
   }
 }
 
-// COMPONENTE PRINCIPAL
 export default function GamesApp() {
 
-  // Datos desde custom hook (Paso 8)
   const { data: juegos, cargando, error } = useFetchGames(API);
 
-  // Favoritos desde custom hook (Paso 8)
   const { favs, toggle, isFav, count: favCount } = useFavorites('ftg-favs');
 
-  // Filtros con useReducer (Paso 10)
   const [filters, dispatch] = useReducer(filtersReducer, initialFilters);
   const { busqueda, genero, plat, orden, pagina } = filters;
 
-  // UI local
   const [tab, setTab] = useState('todos');
   const [modalGame, setModalGame] = useState(null);
 
-  // useMemo: generos unicos (Paso 7)
   const generos = useMemo(() =>
     ['todos', ...[...new Set(juegos.map(g => g.genre))].sort()],
     [juegos]
   );
 
-  // useMemo: filtrar + ordenar (Paso 7)
   const filtrados = useMemo(() => {
     let lista = tab === 'favs'
       ? juegos.filter(g => favs.includes(g.id))
@@ -81,19 +72,16 @@ export default function GamesApp() {
     return lista;
   }, [juegos, tab, favs, genero, plat, busqueda, orden]);
 
-  // useMemo: paginacion (Paso 7)
   const paginados = useMemo(() =>
     filtrados.slice(0, pagina * POR_PAGINA),
     [filtrados, pagina]
   );
 
-  // useCallback: handlers estables (Paso 9)
   const handleToggleFav = useCallback((id) => toggle(id), [toggle]);
   const handleSelectGame = useCallback((g) => setModalGame(g), []);
   const handleCloseModal = useCallback(() => setModalGame(null), []);
   const handleLoadMore = useCallback(() => dispatch({ type: 'NEXT_PAGE' }), []);
 
-  // RENDERIZADO CONDICIONAL (Paso 6)
   if (cargando) {
     return (
       <div className="loading-spinner">
@@ -117,7 +105,6 @@ export default function GamesApp() {
 
   const hasMore = paginados.length < filtrados.length;
 
-  // RENDER PRINCIPAL
   return (
     
         <main>

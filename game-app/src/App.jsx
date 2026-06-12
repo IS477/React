@@ -4,7 +4,7 @@ function App() {
   return (
     <div>
       <h1 style={{ marginBottom: '20px', fontSize: '1.5rem' }}>
-        🎮 FreeToGame Explorer
+         FreeToGame
       </h1>
       <GamesApp />
     </div>

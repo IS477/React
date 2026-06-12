@@ -6,7 +6,6 @@ export default function GameModal({
   onToggleFav,
   onClose,
 }) {
-  // Cerrar modal al presionar Escape
   useEffect(() => {
     const handler = (e) => {
       if (e.key === 'Escape') onClose();

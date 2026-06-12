@@ -1,6 +1,5 @@
 import React from 'react';
 
-// React.memo evita re-renders innecesarios si las props no cambian
 const GameCard = React.memo(function GameCard({
   game,
   isFav,
@@ -9,7 +8,6 @@ const GameCard = React.memo(function GameCard({
 }) {
   return (
     <div className="game-card" onClick={() => onClick(game)}>
-      {/* Botón favorito — stopPropagation evita abrir el modal */}
       <button
         className={`fav-btn ${isFav ? 'active' : ''}`}
         onClick={(e) => {
